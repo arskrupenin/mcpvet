@@ -4,7 +4,7 @@ build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
 name = "mcpvet"
-version = "0.1.0"
+version = "0.2.0"
 description = "Security analysis tool for MCP servers"
 readme = "README.md"
 license = {text = "MIT"}
