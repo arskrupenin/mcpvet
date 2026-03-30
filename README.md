@@ -1,4 +1,10 @@
-# mcpvet
+<p align="center">
+  <img src="logo.png" alt="mcpvet" width="400">
+</p>
+
+<p align="center">
+  <strong>Security analysis tool for MCP servers</strong>
+</p>
 
 A comprehensive security analysis tool for [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers. Performs both static configuration analysis and dynamic runtime testing to identify vulnerabilities in MCP server implementations.
 
