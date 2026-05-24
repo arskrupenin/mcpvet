@@ -1,0 +1,290 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 6,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "create_note",
+        "description": "Create a new note.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Note title"
+            },
+            "content": {
+              "type": "string",
+              "description": "Note content"
+            }
+          },
+          "required": [
+            "title",
+            "content"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "list_notes",
+        "description": "List all saved notes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {}
+      },
+      {
+        "name": "execute_command",
+        "description": "Execute a system command for debugging purposes.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Command to execute"
+            }
+          },
+          "required": [
+            "command"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "write_file",
+        "description": "Write content to any file on the system.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "File path"
+            },
+            "content": {
+              "type": "string",
+              "description": "File content"
+            }
+          },
+          "required": [
+            "path",
+            "content"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "delete_file",
+        "description": "Delete a file from the filesystem.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "File path to delete"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "read_env",
+        "description": "Read environment variables for configuration.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "var_name": {
+              "type": "string",
+              "description": "Variable name"
+            }
+          },
+          "required": [
+            "var_name"
+          ]
+        },
+        "annotations": {}
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-24T22:36:54.793961",
+  "findings": [
+    {
+      "check_id": "CF-02",
+      "severity": "high",
+      "title": "Инструменты с избыточными привилегиями",
+      "description": "Обнаружено 3 инструмент(ов) с потенциально опасными операциями (выполнение команд, удаление данных).",
+      "evidence": "'execute_command' (execute_command); 'write_file' (system); 'delete_file' (system)",
+      "recommendation": "Ограничить каждый инструмент минимально необходимым набором операций; разделить инструменты чтения и записи; применить sandboxing.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 6, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'create_note'",
+      "description": "Описание инструмента 'create_note' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'execute_command'",
+      "description": "Описание инструмента 'execute_command' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'write_file'",
+      "description": "Описание инструмента 'write_file' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'delete_file'",
+      "description": "Описание инструмента 'delete_file' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'execute_command'",
+      "description": "Инструмент 'execute_command' не отклоняет вредоносные входные данные. Обнаружено 3 потенциальных уязвимостей.",
+      "evidence": "command/command_injection: Результат выполнения команды в ответе; command/command_injection: Результат выполнения команды в ответе; command/command_injection: Результат выполнения команды в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'read_env'",
+      "description": "Инструмент 'read_env' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "var_name/sql_injection: SQL-ошибка в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-03",
+      "severity": "medium",
+      "title": "Деструктивный инструмент без маркировки: 'delete_file'",
+      "description": "Инструмент 'delete_file' выполняет деструктивные операции, но не помечен аннотацией destructiveHint.",
+      "evidence": "destructiveHint не установлен, найдены: ['delete']",
+      "recommendation": "Добавить аннотацию destructiveHint=true.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/upbeat-elegant-lovelace/mnt/mcpvet/testbench/test_servers/vulnerable/server_excessive_perms.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-03",
+      "severity": "critical",
+      "title": "Учётные данные в исходном коде или конфигурации",
+      "description": "Обнаружено 1 вхождений учётных данных в файлах проекта MCP-сервера.",
+      "evidence": "server_info_leak.py: OPENAI_API...",
+      "recommendation": "Использовать хранилища секретов (Vault, AWS Secrets Manager); передавать секреты через переменные окружения; добавить .env в .gitignore.",
+      "threat_id": "T04",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-04",
+      "severity": "medium",
+      "title": "Отсутствие журналирования",
+      "description": "В исходном коде MCP-сервера не обнаружены механизмы журналирования вызовов инструментов.",
+      "evidence": "Не обнаружены импорты logging/logger в исходных файлах.",
+      "recommendation": "Реализовать структурированное журналирование всех вызовов инструментов с указанием сессии, времени, параметров и результата.",
+      "threat_id": "T11",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-24T22:36:54.548204). Изменены: 0, добавлены: 6, удалены: 2.",
+      "evidence": "Добавлены: create_note, list_notes, execute_command; Удалены: get_user_profile, process_data",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 2,
+    "high": 3,
+    "medium": 8,
+    "low": 0,
+    "info": 0,
+    "total": 13
+  }
+}

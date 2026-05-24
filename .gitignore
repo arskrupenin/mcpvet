@@ -1,13 +1,27 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
-.env
+*.pyd
+*.egg-info/
+.eggs/
+build/
+dist/
+*.so
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Local rug pull baseline hashes (created by testbench)
+testbench/.hash_store*
+testbench/.hash_store_v*/
+
+# Virtualenv
 .venv/
 venv/
-*.egg-info/
-dist/
-build/
-.mcp_scan_hashes/
-.hash_store/
-reports/
-*.db
+env/

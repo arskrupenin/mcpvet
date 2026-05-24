@@ -11,7 +11,7 @@ A comprehensive security analysis tool for [Model Context Protocol (MCP)](https:
 ## Features
 
 - **18 security checks** across 4 categories
-- Supports **stdio** and **HTTP/SSE** transports
+- Supports **stdio** and **Streamable HTTP** transports
 - Detects **tool poisoning**, **rug pull attacks**, injection vulnerabilities, information leaks
 - Generates reports in **JSON**, **Markdown**, and formatted **console output**
 - Extensible check architecture
@@ -34,14 +34,14 @@ pip install -e .
 # Scan a stdio-based MCP server
 mcpvet --stdio "python my_server.py"
 
-# Scan an HTTP/SSE MCP server
+# Scan an Streamable HTTP MCP server
 mcpvet --http "http://localhost:8080/mcp"
 
 # Include source code analysis (white-box checks)
 mcpvet --stdio "python server.py" --server-dir ./server_code
 
 # Run specific checks only
-mcpvet --stdio "python server.py" --checks CF-01,IM-01,LM-03
+mcpvet --stdio "python server.py" --checks CF-01,IM-01,DM-03
 
 # Export JSON report
 mcpvet --stdio "python server.py" --output report --json-only
@@ -75,15 +75,15 @@ mcpvet --stdio "python server.py" --output report --json-only
 | TR-03 | Credential storage              | T04 |
 | TR-04 | Logging & audit trail           | T11 |
 
-### LLM Interaction (LM)
+### Dynamic Monitoring (DM)
 
 | ID    | Check                          | Threat |
 |-------|--------------------------------|--------|
-| LM-03 | Rug pull detection (description hash comparison) | T02 |
+| DM-03 | Rug pull detection (description hash comparison) | T02 |
 
 ## How It Works
 
-1. **Connect** to the target MCP server via stdio or HTTP/SSE
+1. **Connect** to the target MCP server via stdio or Streamable HTTP
 2. **Enumerate** available tools, resources, and prompts
 3. **Analyze configuration** — scan tool descriptions for poisoning patterns, check permissions
 4. **Test implementation** — send injection payloads, trigger error conditions
@@ -101,7 +101,7 @@ usage: mcpvet [-h] (--stdio COMMAND | --http URL)
 
 Options:
   --stdio COMMAND    MCP server command (stdio transport)
-  --http URL         MCP server URL (HTTP/SSE transport)
+  --http URL         MCP server URL (Streamable HTTP transport)
   --server-dir PATH  Server source code path (for TR-03, TR-04 white-box checks)
   --output PREFIX    Output file prefix
   --output-dir DIR   Report output directory (default: ./reports)

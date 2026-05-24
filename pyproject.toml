@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcpvet"
@@ -25,10 +25,10 @@ classifiers = [
 ]
 
 [project.scripts]
-mcpvet = "analyzer.cli:main"
+mcpvet = "mcpvet.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/arskrupen/mcpvet"
+Homepage = "https://github.com/arskrupenin/mcpvet"
 
 [tool.setuptools.packages.find]
-include = ["analyzer*"]
+include = ["mcpvet*"]

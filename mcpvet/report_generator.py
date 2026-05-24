@@ -1,6 +1,6 @@
 """Генератор отчётов (ReportGenerator).
 
-Формирует итоговый отчёт в форматах JSON и Markdown
+Формирует итоговый отчёт в форматах JSON, Markdown и SARIF v2.1.0
 с перечнем обнаруженных уязвимостей и рекомендациями.
 """
 
@@ -61,6 +61,24 @@ class ReportGenerator:
                 f.write(json_str)
 
         return json_str
+
+    def to_sarif(self, filepath: str = "") -> str:
+        """Сформировать SARIF v2.1.0 отчёт.
+
+        Формат соответствует OASIS Standard SARIF v2.1.0 (март 2020) и пригоден
+        для интеграции с GitHub Code Scanning, GitLab Ultimate, Azure DevOps
+        Advanced Security и SARIF Viewer extensions.
+        """
+        from .sarif_exporter import to_sarif as _to_sarif
+        data = _to_sarif(self.report)
+        sarif_str = json.dumps(data, indent=2, ensure_ascii=False)
+
+        if filepath:
+            os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(sarif_str)
+
+        return sarif_str
 
     def to_markdown(self, filepath: str = "") -> str:
         """Сформировать Markdown-отчёт."""

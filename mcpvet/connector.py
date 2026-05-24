@@ -18,7 +18,7 @@ from typing import Any, AsyncGenerator, Optional
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from mcp.client.sse import sse_client
+from mcp.client.streamable_http import streamablehttp_client
 
 from .models import ServerInfo, ToolInfo
 
@@ -76,12 +76,16 @@ class MCPConnector:
 
     @asynccontextmanager
     async def _connect_http(self) -> AsyncGenerator[MCPConnector, None]:
-        """Подключение через HTTP/SSE транспорт."""
-        async with sse_client(
+        """Подключение через Streamable HTTP транспорт (MCP spec 2025-03+).
+
+        Использует единый эндпоинт с двунаправленным обменом JSON-RPC
+        поверх HTTP POST и опциональным SSE-стримом ответов.
+        """
+        async with streamablehttp_client(
             url=self.config.url,
-            headers=self.config.headers,
+            headers=self.config.headers or None,
             timeout=self.config.timeout,
-        ) as (read_stream, write_stream):
+        ) as (read_stream, write_stream, _get_session_id):
             async with ClientSession(read_stream, write_stream) as session:
                 self.session = session
                 await self._initialize()

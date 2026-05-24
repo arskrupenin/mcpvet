@@ -1,0 +1,245 @@
+{
+  "server": {
+    "name": "vuln-http-basic",
+    "version": "1.27.1",
+    "transport": "http",
+    "tools_count": 3,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": {
+        "listChanged": false
+      },
+      "resources": {
+        "subscribe": false,
+        "listChanged": false
+      },
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "search_users",
+        "description": "Search users in the database by name. Returns matching records.",
+        "input_schema": {
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "search_usersArguments",
+          "type": "object"
+        },
+        "annotations": {}
+      },
+      {
+        "name": "fetch_url",
+        "description": "Fetch content from a URL and return first 200 bytes.",
+        "input_schema": {
+          "properties": {
+            "url": {
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "title": "fetch_urlArguments",
+          "type": "object"
+        },
+        "annotations": {}
+      },
+      {
+        "name": "delete_user",
+        "description": "Delete a user by ID.",
+        "input_schema": {
+          "properties": {
+            "user_id": {
+              "title": "User Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "user_id"
+          ],
+          "title": "delete_userArguments",
+          "type": "object"
+        },
+        "annotations": {}
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-20T06:01:36.639219",
+  "findings": [
+    {
+      "check_id": "CF-02",
+      "severity": "high",
+      "title": "Инструменты с избыточными привилегиями",
+      "description": "Обнаружено 1 инструмент(ов) с потенциально опасными операциями (выполнение команд, удаление данных).",
+      "evidence": "'delete_user' (delete)",
+      "recommendation": "Ограничить каждый инструмент минимально необходимым набором операций; разделить инструменты чтения и записи; применить sandboxing.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 3, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'delete_user'",
+      "description": "Описание инструмента 'delete_user' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'search_users'",
+      "description": "Инструмент 'search_users' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "name/sql_injection: Возможный результат UNION-запроса",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'delete_user'",
+      "description": "Инструмент 'delete_user' не отклоняет вредоносные входные данные. Обнаружено 2 потенциальных уязвимостей.",
+      "evidence": "user_id/sql_injection: SQL-ошибка в ответе; user_id/sql_injection: Возможный результат UNION-запроса",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-02",
+      "severity": "medium",
+      "title": "Утечка информации через ошибки: 'search_users'",
+      "description": "Ответы об ошибках инструмента 'search_users' содержат внутреннюю техническую информацию.",
+      "evidence": "Путь файловой системы: '/errors.pydantic.dev/2.13/v/missing'",
+      "recommendation": "Реализовать единую обработку исключений, возвращающую обобщённые сообщения; журналировать детали серверно.",
+      "threat_id": "",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-02",
+      "severity": "medium",
+      "title": "Утечка информации через ошибки: 'fetch_url'",
+      "description": "Ответы об ошибках инструмента 'fetch_url' содержат внутреннюю техническую информацию.",
+      "evidence": "Путь файловой системы: '/errors.pydantic.dev/2.13/v/missing'",
+      "recommendation": "Реализовать единую обработку исключений, возвращающую обобщённые сообщения; журналировать детали серверно.",
+      "threat_id": "",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-02",
+      "severity": "medium",
+      "title": "Утечка информации через ошибки: 'delete_user'",
+      "description": "Ответы об ошибках инструмента 'delete_user' содержат внутреннюю техническую информацию.",
+      "evidence": "Путь файловой системы: '/errors.pydantic.dev/2.13/v/missing'",
+      "recommendation": "Реализовать единую обработку исключений, возвращающую обобщённые сообщения; журналировать детали серверно.",
+      "threat_id": "",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-03",
+      "severity": "medium",
+      "title": "Деструктивный инструмент без маркировки: 'delete_user'",
+      "description": "Инструмент 'delete_user' выполняет деструктивные операции, но не помечен аннотацией destructiveHint.",
+      "evidence": "destructiveHint не установлен, найдены: ['delete']",
+      "recommendation": "Добавить аннотацию destructiveHint=true.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-02",
+      "severity": "low",
+      "title": "HTTP на localhost без TLS",
+      "description": "Сервер на localhost без TLS. Допустимо для разработки.",
+      "evidence": "URL: http://127.0.0.1:8000/sse",
+      "recommendation": "Для production — обеспечить TLS даже на localhost.",
+      "threat_id": "T10",
+      "result": "info"
+    },
+    {
+      "check_id": "TR-03",
+      "severity": "critical",
+      "title": "Учётные данные в исходном коде или конфигурации",
+      "description": "Обнаружено 1 вхождений учётных данных в файлах проекта MCP-сервера.",
+      "evidence": "server_info_leak.py: OPENAI_API...",
+      "recommendation": "Использовать хранилища секретов (Vault, AWS Secrets Manager); передавать секреты через переменные окружения; добавить .env в .gitignore.",
+      "threat_id": "T04",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-04",
+      "severity": "medium",
+      "title": "Отсутствие журналирования",
+      "description": "В исходном коде MCP-сервера не обнаружены механизмы журналирования вызовов инструментов.",
+      "evidence": "Не обнаружены импорты logging/logger в исходных файлах.",
+      "recommendation": "Реализовать структурированное журналирование всех вызовов инструментов с указанием сессии, времени, параметров и результата.",
+      "threat_id": "T11",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "info",
+      "title": "Baseline хешей инструментов сохранён",
+      "description": "Первый анализ сервера 'vuln-http-basic'. Хеши 3 инструментов сохранены для последующего сравнения.",
+      "evidence": "Инструментов: 3",
+      "recommendation": "При следующем запуске будет выполнено сравнение.",
+      "threat_id": "T02",
+      "result": "info"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 3,
+    "medium": 7,
+    "low": 0,
+    "info": 0,
+    "total": 11
+  }
+}

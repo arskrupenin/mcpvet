@@ -1,0 +1,788 @@
+[
+  {
+    "id": "EXP-01",
+    "name": "Tool Poisoning (T01)",
+    "server": "unknown",
+    "tools_count": 3,
+    "findings_count": 8,
+    "by_severity": {
+      "critical": 3,
+      "high": 1,
+      "medium": 4,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-01",
+        "severity": "critical",
+        "title": "Скрытые инструкции в описании инструмента 'search_notes'",
+        "evidence": "Ключевое слово: 'always'; Ключевое слово: 'do not tell'; Ключевое слово: 'before calling'; Ключевое "
+      },
+      {
+        "check_id": "CF-01",
+        "severity": "critical",
+        "title": "Скрытые инструкции в описании инструмента 'get_weather'",
+        "evidence": "Ключевое слово: 'ignore'; Ключевое слово: 'always'; Ключевое слово: 'ignore previous'; Паттерн: 'ign"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 3, с контролем доступа: 0"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'send_data'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'search_notes'",
+        "evidence": "query/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      }
+    ]
+  },
+  {
+    "id": "EXP-02",
+    "name": "Argument Injection (T06)",
+    "server": "unknown",
+    "tools_count": 4,
+    "findings_count": 7,
+    "by_severity": {
+      "critical": 2,
+      "high": 2,
+      "medium": 3,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'run_diagnostic' (system)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 4, с контролем доступа: 0"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'run_diagnostic'",
+        "evidence": "target/ssrf: Данные внутреннего сервиса в ответе"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: search_users, read_file, run_diagnostic; Удалены: search_notes, send_data, get_weather"
+      }
+    ]
+  },
+  {
+    "id": "EXP-03",
+    "name": "Information Leak (IM-02)",
+    "server": "unknown",
+    "tools_count": 2,
+    "findings_count": 9,
+    "by_severity": {
+      "critical": 2,
+      "high": 3,
+      "medium": 4,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'get_user_profile' (format)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 2, с контролем доступа: 0"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'get_user_profile'",
+        "evidence": "user_id/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'process_data'",
+        "evidence": "data/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "IM-03",
+        "severity": "medium",
+        "title": "Деструктивный инструмент без маркировки: 'get_user_profile'",
+        "evidence": "destructiveHint не установлен, найдены: ['format']"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: get_user_profile, process_data; Удалены: search_users, read_file, run_diagnostic"
+      }
+    ]
+  },
+  {
+    "id": "EXP-04",
+    "name": "Excessive Permissions (T03)",
+    "server": "unknown",
+    "tools_count": 6,
+    "findings_count": 13,
+    "by_severity": {
+      "critical": 2,
+      "high": 3,
+      "medium": 8,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'execute_command' (execute_command); 'write_file' (system); 'delete_file' (system)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 6, с контролем доступа: 0"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'create_note'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'execute_command'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'write_file'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'delete_file'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'execute_command'",
+        "evidence": "command/command_injection: Результат выполнения команды в ответе; command/command_injection: Результ"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'read_env'",
+        "evidence": "var_name/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "IM-03",
+        "severity": "medium",
+        "title": "Деструктивный инструмент без маркировки: 'delete_file'",
+        "evidence": "destructiveHint не установлен, найдены: ['delete']"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: create_note, list_notes, execute_command; Удалены: get_user_profile, process_data"
+      }
+    ]
+  },
+  {
+    "id": "EXP-05",
+    "name": "Rug Pull (T02)",
+    "server": "unknown",
+    "tools_count": 2,
+    "findings_count": 6,
+    "by_severity": {
+      "critical": 2,
+      "high": 1,
+      "medium": 3,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": false,
+    "correct": false,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 2, с контролем доступа: 0"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'summarize'",
+        "evidence": "text/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: translate, summarize; Удалены: create_note, list_notes, execute_command"
+      }
+    ]
+  },
+  {
+    "id": "EXP-05b",
+    "name": "Rug Pull Active (T02)",
+    "server": "unknown",
+    "tools_count": 2,
+    "findings_count": 5,
+    "by_severity": {
+      "critical": 1,
+      "high": 1,
+      "medium": 3,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 2, с контролем доступа: 0"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'summarize'",
+        "evidence": "text/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      }
+    ]
+  },
+  {
+    "id": "EXP-06",
+    "name": "No Auth (T09)",
+    "server": "unknown",
+    "tools_count": 4,
+    "findings_count": 10,
+    "by_severity": {
+      "critical": 2,
+      "high": 1,
+      "medium": 7,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'get_employee' (format); 'delete_employee' (system); 'export_all_data' (format)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 4, с контролем доступа: 0"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'delete_employee'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "IM-03",
+        "severity": "medium",
+        "title": "Деструктивный инструмент без маркировки: 'get_employee'",
+        "evidence": "destructiveHint не установлен, найдены: ['format']"
+      },
+      {
+        "check_id": "IM-03",
+        "severity": "medium",
+        "title": "Деструктивный инструмент без маркировки: 'delete_employee'",
+        "evidence": "destructiveHint не установлен, найдены: ['delete', 'remove']"
+      },
+      {
+        "check_id": "IM-03",
+        "severity": "medium",
+        "title": "Деструктивный инструмент без маркировки: 'export_all_data'",
+        "evidence": "destructiveHint не установлен, найдены: ['format']"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: get_employee, update_salary, delete_employee; Удалены: translate, summarize"
+      }
+    ]
+  },
+  {
+    "id": "EXP-07",
+    "name": "Cross-Server Shadowing (T07)",
+    "server": "unknown",
+    "tools_count": 3,
+    "findings_count": 10,
+    "by_severity": {
+      "critical": 4,
+      "high": 2,
+      "medium": 4,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": true,
+    "correct": true,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-01",
+        "severity": "critical",
+        "title": "Скрытые инструкции в описании инструмента 'enhanced_send_email'",
+        "evidence": "Ключевое слово: 'always'; Ключевое слово: 'instead of'; Паттерн: 'ALWAYS use'; Ссылки на другие инст"
+      },
+      {
+        "check_id": "CF-01",
+        "severity": "critical",
+        "title": "Скрытые инструкции в описании инструмента 'file_manager'",
+        "evidence": "Ключевое слово: 'also send'; Паттерн: 'send'"
+      },
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'file_manager' (write_file)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 3, с контролем доступа: 0"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'enhanced_send_email'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "IM-01",
+        "severity": "high",
+        "title": "Недостаточная валидация параметров: 'security_scanner'",
+        "evidence": "action_summary/sql_injection: SQL-ошибка в ответе"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/vulnerable/server_"
+      },
+      {
+        "check_id": "TR-03",
+        "severity": "critical",
+        "title": "Учётные данные в исходном коде или конфигурации",
+        "evidence": "server_info_leak.py: OPENAI_API..."
+      },
+      {
+        "check_id": "TR-04",
+        "severity": "medium",
+        "title": "Отсутствие журналирования",
+        "evidence": "Не обнаружены импорты logging/logger в исходных файлах."
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: enhanced_send_email, file_manager, security_scanner; Удалены: get_employee, update_salary"
+      }
+    ]
+  },
+  {
+    "id": "EXP-08",
+    "name": "Secure Notes (контроль)",
+    "server": "unknown",
+    "tools_count": 4,
+    "findings_count": 5,
+    "by_severity": {
+      "critical": 1,
+      "high": 1,
+      "medium": 3,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": false,
+    "correct": false,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-02",
+        "severity": "high",
+        "title": "Инструменты с избыточными привилегиями",
+        "evidence": "'delete_note' (delete)"
+      },
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 4, с контролем доступа: 0"
+      },
+      {
+        "check_id": "CF-04",
+        "severity": "medium",
+        "title": "Недостаточная информация для consent: 'delete_note'",
+        "evidence": "Инструмент с операциями записи без указания побочных эффектов"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/secure/server_secu"
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: create_note, list_notes, get_note; Удалены: enhanced_send_email, file_manager, security_s"
+      }
+    ]
+  },
+  {
+    "id": "EXP-09",
+    "name": "Secure DB (контроль)",
+    "server": "unknown",
+    "tools_count": 2,
+    "findings_count": 3,
+    "by_severity": {
+      "critical": 1,
+      "high": 0,
+      "medium": 2,
+      "low": 0,
+      "info": 0
+    },
+    "detected": true,
+    "expected_vulns": false,
+    "correct": false,
+    "checks_run": [
+      "CF-01",
+      "CF-02",
+      "CF-03",
+      "CF-04",
+      "IM-01",
+      "IM-02",
+      "IM-03",
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "TR-04",
+      "LM-03"
+    ],
+    "findings": [
+      {
+        "check_id": "CF-03",
+        "severity": "medium",
+        "title": "Отсутствие авторизации на уровне инструментов",
+        "evidence": "Инструментов: 2, с контролем доступа: 0"
+      },
+      {
+        "check_id": "TR-01",
+        "severity": "medium",
+        "title": "Отсутствие изоляции процесса MCP-сервера",
+        "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/secure/server_secu"
+      },
+      {
+        "check_id": "LM-03",
+        "severity": "critical",
+        "title": "Обнаружено изменение инструментов (rug pull)",
+        "evidence": "Добавлены: search_users, read_document; Удалены: create_note, list_notes, get_note"
+      }
+    ]
+  }
+]

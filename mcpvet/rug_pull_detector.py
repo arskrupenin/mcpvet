@@ -1,6 +1,6 @@
 """Модуль обнаружения rug pull (RugPullDetector).
 
-Реализует проверку LM-03: обнаружение изменения описаний или поведения
+Реализует проверку DM-03: обнаружение изменения описаний или поведения
 инструментов MCP-сервера после первоначального одобрения пользователем.
 """
 
@@ -33,7 +33,7 @@ class RugPullDetector:
         self.findings: list[Finding] = []
 
     def run_all(self) -> list[Finding]:
-        """Запустить проверку LM-03."""
+        """Запустить проверку DM-03."""
         self.findings = []
         self.check_lm03_rug_pull()
         return self.findings
@@ -83,7 +83,7 @@ class RugPullDetector:
         logger.info(f"Хеши сохранены: {hash_file}")
 
     def check_lm03_rug_pull(self) -> list[Finding]:
-        """LM-03: Обнаружение rug pull через сравнение хешей."""
+        """DM-03: Обнаружение rug pull через сравнение хешей."""
         findings = []
         current_hashes = self._compute_all_hashes()
         previous_data = self._load_previous_hashes()
@@ -92,7 +92,7 @@ class RugPullDetector:
             # Первый запуск — сохраняем baseline
             self._save_hashes(current_hashes)
             findings.append(Finding(
-                check_id="LM-03",
+                check_id="DM-03",
                 severity=Severity.INFO,
                 title="Baseline хешей инструментов сохранён",
                 description=(
@@ -145,7 +145,7 @@ class RugPullDetector:
                     evidence_parts.append(f"Удалены: {', '.join(removed[:3])}")
 
                 findings.append(Finding(
-                    check_id="LM-03",
+                    check_id="DM-03",
                     severity=Severity.CRITICAL,
                     title="Обнаружено изменение инструментов (rug pull)",
                     description=(
@@ -163,7 +163,7 @@ class RugPullDetector:
                 ))
             else:
                 findings.append(Finding(
-                    check_id="LM-03",
+                    check_id="DM-03",
                     severity=Severity.INFO,
                     title="Инструменты не изменились",
                     description=(

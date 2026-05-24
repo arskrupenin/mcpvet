@@ -1,0 +1,194 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 4,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "search_users",
+        "description": "Search users in the database by name.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "User name to search"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "read_file",
+        "description": "Read contents of a file by path.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "File path to read"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "run_diagnostic",
+        "description": "Run a system diagnostic command.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "Diagnostic target (hostname or IP)"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "fetch_url",
+        "description": "Fetch content from a URL.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL to fetch"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "annotations": {}
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-24T22:36:54.232901",
+  "findings": [
+    {
+      "check_id": "CF-02",
+      "severity": "high",
+      "title": "Инструменты с избыточными привилегиями",
+      "description": "Обнаружено 1 инструмент(ов) с потенциально опасными операциями (выполнение команд, удаление данных).",
+      "evidence": "'run_diagnostic' (system)",
+      "recommendation": "Ограничить каждый инструмент минимально необходимым набором операций; разделить инструменты чтения и записи; применить sandboxing.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 4, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'run_diagnostic'",
+      "description": "Инструмент 'run_diagnostic' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "target/ssrf: Данные внутреннего сервиса в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/upbeat-elegant-lovelace/mnt/mcpvet/testbench/test_servers/vulnerable/server_no_validation.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-03",
+      "severity": "critical",
+      "title": "Учётные данные в исходном коде или конфигурации",
+      "description": "Обнаружено 1 вхождений учётных данных в файлах проекта MCP-сервера.",
+      "evidence": "server_info_leak.py: OPENAI_API...",
+      "recommendation": "Использовать хранилища секретов (Vault, AWS Secrets Manager); передавать секреты через переменные окружения; добавить .env в .gitignore.",
+      "threat_id": "T04",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-04",
+      "severity": "medium",
+      "title": "Отсутствие журналирования",
+      "description": "В исходном коде MCP-сервера не обнаружены механизмы журналирования вызовов инструментов.",
+      "evidence": "Не обнаружены импорты logging/logger в исходных файлах.",
+      "recommendation": "Реализовать структурированное журналирование всех вызовов инструментов с указанием сессии, времени, параметров и результата.",
+      "threat_id": "T11",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-24T22:36:53.985822). Изменены: 0, добавлены: 4, удалены: 3.",
+      "evidence": "Добавлены: search_users, read_file, run_diagnostic; Удалены: search_notes, send_data, get_weather",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 2,
+    "high": 2,
+    "medium": 3,
+    "low": 0,
+    "info": 0,
+    "total": 7
+  }
+}

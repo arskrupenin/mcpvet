@@ -1,0 +1,155 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 2,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "translate",
+        "description": "Translate text between languages.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text to translate"
+            },
+            "target_lang": {
+              "type": "string",
+              "description": "Target language code"
+            }
+          },
+          "required": [
+            "text",
+            "target_lang"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "summarize",
+        "description": "Summarize a long text into key points.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text to summarize"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "annotations": {}
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-24T22:36:55.100384",
+  "findings": [
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 2, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'summarize'",
+      "description": "Инструмент 'summarize' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "text/sql_injection: SQL-ошибка в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/upbeat-elegant-lovelace/mnt/mcpvet/testbench/test_servers/vulnerable/server_rug_pull.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-03",
+      "severity": "critical",
+      "title": "Учётные данные в исходном коде или конфигурации",
+      "description": "Обнаружено 1 вхождений учётных данных в файлах проекта MCP-сервера.",
+      "evidence": "server_info_leak.py: OPENAI_API...",
+      "recommendation": "Использовать хранилища секретов (Vault, AWS Secrets Manager); передавать секреты через переменные окружения; добавить .env в .gitignore.",
+      "threat_id": "T04",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-04",
+      "severity": "medium",
+      "title": "Отсутствие журналирования",
+      "description": "В исходном коде MCP-сервера не обнаружены механизмы журналирования вызовов инструментов.",
+      "evidence": "Не обнаружены импорты logging/logger в исходных файлах.",
+      "recommendation": "Реализовать структурированное журналирование всех вызовов инструментов с указанием сессии, времени, параметров и результата.",
+      "threat_id": "T11",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-24T22:36:54.856079). Изменены: 0, добавлены: 2, удалены: 6.",
+      "evidence": "Добавлены: translate, summarize; Удалены: create_note, list_notes, execute_command",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 2,
+    "high": 1,
+    "medium": 3,
+    "low": 0,
+    "info": 0,
+    "total": 6
+  }
+}

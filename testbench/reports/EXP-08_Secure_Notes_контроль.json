@@ -1,0 +1,197 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 4,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "create_note",
+        "description": "Create a new text note with a title and content. Creates a note in the local notes storage.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Note title (max 200 characters, alphanumeric and basic punctuation)",
+              "maxLength": 200
+            },
+            "content": {
+              "type": "string",
+              "description": "Note text content (max 10000 characters)",
+              "maxLength": 10000
+            }
+          },
+          "required": [
+            "title",
+            "content"
+          ]
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": null
+        }
+      },
+      {
+        "name": "list_notes",
+        "description": "List all saved notes. Returns note IDs, titles, and creation dates.",
+        "input_schema": {
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": null
+        }
+      },
+      {
+        "name": "get_note",
+        "description": "Get the full content of a specific note by its ID.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "note_id": {
+              "type": "string",
+              "description": "Note ID (UUID format)"
+            }
+          },
+          "required": [
+            "note_id"
+          ]
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": null
+        }
+      },
+      {
+        "name": "delete_note",
+        "description": "Permanently delete a note by its ID. This action cannot be undone.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "note_id": {
+              "type": "string",
+              "description": "Note ID (UUID format) to delete"
+            }
+          },
+          "required": [
+            "note_id"
+          ]
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": null
+        }
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-24T22:36:56.236903",
+  "findings": [
+    {
+      "check_id": "CF-02",
+      "severity": "high",
+      "title": "Инструменты с избыточными привилегиями",
+      "description": "Обнаружено 1 инструмент(ов) с потенциально опасными операциями (выполнение команд, удаление данных).",
+      "evidence": "'delete_note' (delete)",
+      "recommendation": "Ограничить каждый инструмент минимально необходимым набором операций; разделить инструменты чтения и записи; применить sandboxing.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 4, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-04",
+      "severity": "medium",
+      "title": "Недостаточная информация для consent: 'delete_note'",
+      "description": "Описание инструмента 'delete_note' не позволяет пользователю принять осознанное решение о допустимости вызова.",
+      "evidence": "Инструмент с операциями записи без указания побочных эффектов",
+      "recommendation": "Обеспечить информативные описания с указанием побочных эффектов; реализовать уведомления об изменениях инструментов.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/upbeat-elegant-lovelace/mnt/mcpvet/testbench/test_servers/secure/server_secure_notes.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-24T22:36:55.997613). Изменены: 0, добавлены: 4, удалены: 3.",
+      "evidence": "Добавлены: create_note, list_notes, get_note; Удалены: enhanced_send_email, file_manager, security_scanner",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 1,
+    "medium": 3,
+    "low": 0,
+    "info": 0,
+    "total": 5
+  }
+}

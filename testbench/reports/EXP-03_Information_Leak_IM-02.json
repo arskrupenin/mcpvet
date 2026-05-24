@@ -1,0 +1,184 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 2,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "get_user_profile",
+        "description": "Get user profile information by ID.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "integer",
+              "description": "User ID"
+            }
+          },
+          "required": [
+            "user_id"
+          ]
+        },
+        "annotations": {}
+      },
+      {
+        "name": "process_data",
+        "description": "Process and transform data.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "string",
+              "description": "Data to process"
+            },
+            "format": {
+              "type": "string",
+              "description": "Output format"
+            }
+          },
+          "required": [
+            "data"
+          ]
+        },
+        "annotations": {}
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-24T22:36:54.513463",
+  "findings": [
+    {
+      "check_id": "CF-02",
+      "severity": "high",
+      "title": "Инструменты с избыточными привилегиями",
+      "description": "Обнаружено 1 инструмент(ов) с потенциально опасными операциями (выполнение команд, удаление данных).",
+      "evidence": "'get_user_profile' (format)",
+      "recommendation": "Ограничить каждый инструмент минимально необходимым набором операций; разделить инструменты чтения и записи; применить sandboxing.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 2, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'get_user_profile'",
+      "description": "Инструмент 'get_user_profile' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "user_id/sql_injection: SQL-ошибка в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-01",
+      "severity": "high",
+      "title": "Недостаточная валидация параметров: 'process_data'",
+      "description": "Инструмент 'process_data' не отклоняет вредоносные входные данные. Обнаружено 1 потенциальных уязвимостей.",
+      "evidence": "data/sql_injection: SQL-ошибка в ответе",
+      "recommendation": "Реализовать строгую валидацию входных параметров по JSON Schema; использовать параметризованные запросы для БД; применять allow-списки для путей файлов.",
+      "threat_id": "T06",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "IM-03",
+      "severity": "medium",
+      "title": "Деструктивный инструмент без маркировки: 'get_user_profile'",
+      "description": "Инструмент 'get_user_profile' выполняет деструктивные операции, но не помечен аннотацией destructiveHint.",
+      "evidence": "destructiveHint не установлен, найдены: ['format']",
+      "recommendation": "Добавить аннотацию destructiveHint=true.",
+      "threat_id": "T03",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/upbeat-elegant-lovelace/mnt/mcpvet/testbench/test_servers/vulnerable/server_info_leak.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-03",
+      "severity": "critical",
+      "title": "Учётные данные в исходном коде или конфигурации",
+      "description": "Обнаружено 1 вхождений учётных данных в файлах проекта MCP-сервера.",
+      "evidence": "server_info_leak.py: OPENAI_API...",
+      "recommendation": "Использовать хранилища секретов (Vault, AWS Secrets Manager); передавать секреты через переменные окружения; добавить .env в .gitignore.",
+      "threat_id": "T04",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-04",
+      "severity": "medium",
+      "title": "Отсутствие журналирования",
+      "description": "В исходном коде MCP-сервера не обнаружены механизмы журналирования вызовов инструментов.",
+      "evidence": "Не обнаружены импорты logging/logger в исходных файлах.",
+      "recommendation": "Реализовать структурированное журналирование всех вызовов инструментов с указанием сессии, времени, параметров и результата.",
+      "threat_id": "T11",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "DM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-24T22:36:54.267016). Изменены: 0, добавлены: 2, удалены: 4.",
+      "evidence": "Добавлены: get_user_profile, process_data; Удалены: search_users, read_file, run_diagnostic",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "DM-03"
+  ],
+  "checks_skipped": [
+    "DM-01",
+    "DM-02",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 2,
+    "high": 3,
+    "medium": 4,
+    "low": 0,
+    "info": 0,
+    "total": 9
+  }
+}

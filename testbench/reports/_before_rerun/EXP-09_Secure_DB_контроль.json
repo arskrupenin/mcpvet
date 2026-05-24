@@ -1,0 +1,134 @@
+{
+  "server": {
+    "name": "unknown",
+    "version": "unknown",
+    "transport": "stdio",
+    "tools_count": 2,
+    "resources_count": 0,
+    "prompts_count": 0,
+    "capabilities": {
+      "experimental": {},
+      "logging": null,
+      "prompts": null,
+      "resources": null,
+      "tools": {
+        "listChanged": false
+      },
+      "completions": null,
+      "tasks": null
+    },
+    "tools": [
+      {
+        "name": "search_users",
+        "description": "Search users in the database by name. Returns matching user records (ID, name, email).",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "User name to search (max 100 characters, letters and basic punctuation only)",
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": null
+        }
+      },
+      {
+        "name": "read_document",
+        "description": "Read a document from the safe documents directory. Only files in the designated safe directory can be read. Does not support paths with directory traversal.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string",
+              "description": "Filename (without path, must be in the safe directory)",
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "filename"
+          ]
+        },
+        "annotations": {
+          "title": null,
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": null
+        }
+      }
+    ]
+  },
+  "scan_timestamp": "2026-05-07T12:33:42.944955",
+  "findings": [
+    {
+      "check_id": "CF-03",
+      "severity": "medium",
+      "title": "Отсутствие авторизации на уровне инструментов",
+      "description": "Ни один из инструментов не содержит аннотаций контроля доступа. Все инструменты доступны одинаково для любого клиента.",
+      "evidence": "Инструментов: 2, с контролем доступа: 0",
+      "recommendation": "Реализовать авторизацию на уровне инструментов; реализовать ролевую модель доступа.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "TR-01",
+      "severity": "medium",
+      "title": "Отсутствие изоляции процесса MCP-сервера",
+      "description": "Команда запуска MCP-сервера не содержит признаков контейнеризации или sandbox-изоляции.",
+      "evidence": "Команда: /usr/bin/python3 /sessions/pensive-keen-curie/mnt/vkr/тесты/test_servers/secure/server_secure_db.py",
+      "recommendation": "Применить контейнеризацию (Docker) или sandbox (firejail, bubblewrap); ограничить доступ к файловой системе.",
+      "threat_id": "T09",
+      "result": "vulnerable"
+    },
+    {
+      "check_id": "LM-03",
+      "severity": "critical",
+      "title": "Обнаружено изменение инструментов (rug pull)",
+      "description": "Описания инструментов сервера 'unknown' изменились с момента предыдущего анализа (2026-05-07T12:33:42.676655). Изменены: 0, добавлены: 2, удалены: 4.",
+      "evidence": "Добавлены: search_users, read_document; Удалены: create_note, list_notes, get_note",
+      "recommendation": "Проверить изменения вручную; требовать повторного одобрения пользователя; реализовать журналирование изменений.",
+      "threat_id": "T02",
+      "result": "vulnerable"
+    }
+  ],
+  "checks_run": [
+    "CF-01",
+    "CF-02",
+    "CF-03",
+    "CF-04",
+    "IM-01",
+    "IM-02",
+    "IM-03",
+    "TR-01",
+    "TR-02",
+    "TR-03",
+    "TR-04",
+    "LM-03"
+  ],
+  "checks_skipped": [
+    "LM-01",
+    "LM-02",
+    "LM-04",
+    "LM-05",
+    "LM-06",
+    "IM-04"
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 0,
+    "medium": 2,
+    "low": 0,
+    "info": 0,
+    "total": 3
+  }
+}

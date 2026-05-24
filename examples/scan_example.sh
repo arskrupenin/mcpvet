@@ -16,5 +16,5 @@ mcpvet --http "https://mcp.example.com/api" \
 
 # Run only poisoning and rug pull checks
 mcpvet --stdio "python server.py" \
-    --checks CF-01,LM-03 \
+    --checks CF-01,DM-03 \
     --hash-dir ./hashes
